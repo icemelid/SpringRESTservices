@@ -1,7 +1,7 @@
 package com.gecko.controller;
 
-import com.gecko.bean.TestProduct;
 import com.gecko.exception.ResourceNotFoundException;
+import com.gecko.model.Product;
 import com.gecko.repository.ProductRepository;
 import com.gecko.service.IProductService;
 
@@ -43,25 +43,25 @@ public class ProductController {
     IProductService productService;
 
     @RequestMapping("/api/{productId}")
-    public TestProduct findProduct(@PathVariable Long productId) {
-        TestProduct product = productService.findById(productId);
+    public Product findProduct(@PathVariable Long productId) {
+        Product product = productService.findById(productId);
         return product;
     }
     
     @PostMapping("/api")
-	public TestProduct createProduct(@Valid @RequestBody TestProduct product) {
+	public Product createProduct(@Valid @RequestBody Product product) {
 		return productRepository.save(product);
 	} 
     
     @RequestMapping(value="/apifile", method=RequestMethod.POST)
-    public int saveFile(@RequestParam(name="file") MultipartFile filename) {
+    public int saveFilePlainTxt(@RequestParam(name="file") MultipartFile filename) {
     	return productService.saveFile(filename);
     }
     
 	@DeleteMapping("/api/{id}")
 	public Map<String, Boolean> delete(@PathVariable(value = "id") Long productId) 
 			throws ResourceNotFoundException {
-				TestProduct product = productService.findById(productId);
+				Product product = productService.findById(productId);
 				//.orElseThrow(() -> new ResourceNotFoundException("Product not found for this id :: " + productId));
 		productRepository.delete(product);
 		Map<String, Boolean> response = new HashMap<>();
@@ -69,7 +69,7 @@ public class ProductController {
 		return response;
 	}
 	@GetMapping(path = "/api/{startDate}/{endDate}/{pagina}")
-	public List<TestProduct> findPaginated(
+	public List<Product> findPaginated(
 			@PathVariable(value="startDate") String startDate, @PathVariable(value="endDate") String endDate, @PathVariable(value="pagina") int pagina) {
 		Pageable pageRequest =  new PageRequest(pagina, 3);
 		return productRepository.getAllBetweenDatesList(startDate, endDate, pageRequest);
