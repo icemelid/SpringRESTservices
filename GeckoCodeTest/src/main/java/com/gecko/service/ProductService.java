@@ -1,11 +1,9 @@
 package com.gecko.service;
 
-import com.gecko.bean.Product;
+import com.gecko.bean.TestProduct;
 import com.gecko.repository.ProductRepository;
 import com.opencsv.CSVReader;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,14 +24,14 @@ public class ProductService implements IProductService {
     private ProductRepository repository;
 
     @Override
-    public Product findById(Long id) {
-    	Product product = repository.findOne(id);
+    public TestProduct findById(Long id) {
+    	TestProduct product = repository.findOne(id);
         return product;
     }  
 
 	@Override
 	public int saveFile(MultipartFile filename) {
-    	List<Product> products = new ArrayList();
+    	List<TestProduct> products = new ArrayList();
         // FileInputStream fiStream = null;
     	InputStream iStream = null;
         try {       
@@ -44,16 +42,18 @@ public class ProductService implements IProductService {
             reader.readNext();
             
             while ((nextLine = reader.readNext()) != null) {
-            	Product newProduct = new Product(nextLine[0], nextLine[1], nextLine[2]);
+            	String inputDatetime = nextLine[2]; // "2007-11-11 12:13:14" ;
+            	java.sql.Timestamp ts = java.sql.Timestamp.valueOf(inputDatetime) ;
+            	TestProduct newProduct = new TestProduct(nextLine[0], nextLine[1], ts);
                 products.add(newProduct);
-                System.out.println("Name : " + nextLine[1]);
+                System.out.println("Name : " + nextLine[1] + " - " + nextLine[2]);
             }
             repository.save(products);
             return 9;
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);            
+            Logger.getLogger(TestProduct.class.getName()).log(Level.SEVERE, null, ex);            
         } catch (IOException ex) {
-            Logger.getLogger(Product.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TestProduct.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (iStream != null) {
@@ -63,4 +63,15 @@ public class ProductService implements IProductService {
         }
 		return 0;
 	}
+	
+	/*
+    @Override
+    public List<Product> findPaginated(int pageNo, int pageSize) { 
+        Pageable paging =  new PageRequest(pageNo, pageSize, Sort.Direction.ASC, "id");
+        
+        Page<Product> pagedResult = repository.findAll(paging);
+
+        return pagedResult.iterator();
+    }
+    */
 }

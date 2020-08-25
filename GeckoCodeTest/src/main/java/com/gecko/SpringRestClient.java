@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.gecko.bean.Product;
+import com.gecko.bean.TestProduct;
 
 public class SpringRestClient {
 
@@ -23,7 +23,7 @@ public class SpringRestClient {
 		SpringRestClient springRestClient = new SpringRestClient();
 		
 		// Step1: first create a new employee
-		springRestClient.createProduct();
+		// springRestClient.createProduct();
 	}
 
 	private void getProductById() {
@@ -31,11 +31,11 @@ public class SpringRestClient {
 		params.put("id", "99");
 
 		RestTemplate restTemplate = new RestTemplate();
-		Product result = restTemplate.getForObject(GET_PRODUCT_ENDPOINT_URL, Product.class, params);
+		TestProduct result = restTemplate.getForObject(GET_PRODUCT_ENDPOINT_URL, TestProduct.class, params);
 
 		System.out.println(result);
 	}
-
+/*
 	private void createProduct() {
 		Product newProduct = new Product("Table", "Metal Table", "20200815121002");
 		//newProduct.setId(Long.parseLong("1"));
@@ -46,4 +46,5 @@ public class SpringRestClient {
 
 		System.out.println(result);
 	}
+*/
 }
